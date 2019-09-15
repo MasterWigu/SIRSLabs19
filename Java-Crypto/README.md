@@ -49,7 +49,7 @@ $ cd /tmp/JavaCrypto
 Compile the code:
 
 ```bash
-$ javac src/pt/ulisboa/tecnico/meic/sirs/
+$ javac src/pt/ulisboa/tecnico/meic/sirs/*.java
 ```
 You will also need to define the Classpath environment variable. 
 The Classpath is a parameter that specifies the location of user-defined classes and packages. 
@@ -85,6 +85,8 @@ One of the constraints to make them work as expected is that the key stream must
 The following steps visually illustrate what happens if they are reused, even if just once:
 
 Generate a new 480x480 random image:
+
+** Create directory outputs in intro
 
 ```bash
 $ java pt.ulisboa.tecnico.meic.sirs.RandomImageGenerator intro/outputs/otp.png 480 480
@@ -282,7 +284,7 @@ Create it:
 $ echo 01 > server.srl
 ```
 
-Then, generating a key for a user is basically repeating the same steps (see commands above), except that the self-sign no longer happens and is replaced by:
+Then, generating a key for a user is basically **repeating the same steps** (see commands above), except that the self-sign no longer happens and is replaced by:
 
 ```bash
 $ openssl x509 -req -days 365 -in user.csr -CA server.crt -CAkey server.key -out user.crt
@@ -291,9 +293,9 @@ $ openssl x509 -req -days 365 -in user.csr -CA server.crt -CAkey server.key -out
 Sign the file grades.txt with the user certificate:
 
 ```bash
-$ openssl dgst -sha256 grades/inputs/grades.txt \&gt; grades.sha256
+$ openssl dgst -sha256 grades/inputs/grades.txt > grades.sha256
 
-$ openssl rsautl -sign -inkey user.key -keyform PEM -in grades.sha256 \&gt; grades.sig
+$ openssl rsautl -sign -inkey user.key -keyform PEM -in grades.sha256 > grades.sig
 ```
 
 Verify the signature with the user key:
@@ -327,13 +329,13 @@ To read the generated keys in Java it is necessary to convert them to the right 
 Convert the private key to PKCS8:
 
 ```bash
-$ openssl pkcs8 -topk8 -inform PEM -outform DER -in server.key -nocrypt \&gt; server\_pkcs8.key
+$ openssl pkcs8 -topk8 -inform PEM -outform DER -in server.key -nocrypt > server_pkcs8.key
 ```
 
 Read the key files using the following command:
 
 ```bash
-java pt.ulisboa.tecnico.meic.sirs.RSAKeyGenerator r server\_pkcs8.key server.crt
+java pt.ulisboa.tecnico.meic.sirs.RSAKeyGenerator r server_pkcs8.key server.crt
 ```
 
 
@@ -366,7 +368,7 @@ Begin by encrypting this file into ecb.aes.
 For this example, we will still reuse the AES key generated above and ECB mode.
 
 ```bash
-$java pt.ulisboa.tecnico.meic.sirs.FileAESCipher grades/inputs/grades.txt intro/outputs/aes.key ECB grades/outputs/grades.ecb.aes
+$java FileAESCipher grades/inputs/grades.txt intro/outputs/aes.key ECB grades/outputs/grades.ecb.aes
 ```
 
 Keeping in mind how the mode operations work, and without using the secret key, try to change your grade to 21 in the encrypted files or give everyone in class a 20.
@@ -378,9 +380,9 @@ Did your changes have side effects?
 Now try to attack cbc.aes and ofb.aes. For this example, we will still reuse the AES key generated above but use the CBC and OFB modes.
 
 ```bash
-$java pt.ulisboa.tecnico.meic.sirs.FileAESCipher grades/inputs/grades.txt intro/outputs/aes.key CBC grades/outputs/grades.cbc.aes
+$java FileAESCipher grades/inputs/grades.txt intro/outputs/aes.key CBC grades/outputs/grades.cbc.aes
 
-$java pt.ulisboa.tecnico.meic.sirs.FileAESCipher grades/inputs/grades.txt intro/outputs/aes.key OFB grades/outputs/grades.ofb.aes
+$java FileAESCipher grades/inputs/grades.txt intro/outputs/aes.key OFB grades/outputs/grades.ofb.aes
 ```
 
 How do you compare the results with EBC?
@@ -390,13 +392,13 @@ A possibility is to use base 64 encoding that, for every binary sequence of 6 bi
 Execute the following to create a base 64 representation of files previously generated.
 
 ```bash
-$java pt.ulisboa.tecnico.meic.sirs.Base64Encode grades/outputs/grades.cbc.aes grades/outputs/grades.cbc.aes.b64
+$java Base64Encode grades/outputs/grades.cbc.aes grades/outputs/grades.cbc.aes.b64
 ```
 
 Decode them:
 
 ```bash
-$java pt.ulisboa.tecnico.meic.sirs.Base64Decode grades/outputs/grades.cbc.aes.b64 grades/outputs/grades.cbc.aes.b64.decoded
+$java Base64Decode grades/outputs/grades.cbc.aes.b64 grades/outputs/grades.cbc.aes.b64.decoded
 ```
 
 Check if they are similar using the diff command (or fc /b command on Windows):

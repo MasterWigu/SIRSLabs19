@@ -87,19 +87,19 @@ The following steps visually illustrate what happens if they are reused, even if
 Generate a new 480x480 random image:
 
 ```bash
-$ java RandomImageGenerator intro/outputs/otp.png 480 480
+$ java pt.ulisboa.tecnico.meic.sirs.RandomImageGenerator intro/outputs/otp.png 480 480
 ```
 
 Perform the bitwise eXclusive OR operation (XOR) with the generated key:
 
 ```bash
-$ java ImageXor intro/inputs/tecnico-0480.png intro/outputs/otp.png intro/outputs/encrypted-tecnico.png
+$ java pt.ulisboa.tecnico.meic.sirs.ImageXor intro/inputs/tecnico-0480.png intro/outputs/otp.png intro/outputs/encrypted-tecnico.png
 ```
 
 XOR tux-0480.png with the same generated key:
 
 ```bash
-$ java ImageXor intro/inputs/tux-0480.png intro/outputs/otp.png intro/outputs/encrypted-tux.png
+$ java pt.ulisboa.tecnico.meic.sirs.ImageXor intro/inputs/tux-0480.png intro/outputs/otp.png intro/outputs/encrypted-tux.png
 ```
 
 Watch the images encrypted-tecnico.png and encrypted-tux.png. 
@@ -108,7 +108,7 @@ Switch between them and see the differences.
 To make the differences obvious, XOR them together:
 
 ```bash
-$ java ImageXor intro/outputs/encrypted-tecnico.png intro/outputs/encrypted-tux.png intro/outputs/tecnico-tux.png
+$ java pt.ulisboa.tecnico.meic.sirs.ImageXor intro/outputs/encrypted-tecnico.png intro/outputs/encrypted-tux.png intro/outputs/tecnico-tux.png
 ```
 
 You can see that the reuse of a one-time pad (or any stream cipher key at all) considerably weakens (or completely breaks) the security of the information. 
@@ -149,13 +149,13 @@ C[i] = E_k(M[i])
 Begin by generating a new AES Key:
 
 ```bash
-$ java AESKeyGenerator w intro/outputs/aes.key
+$ java pt.ulisboa.tecnico.meic.sirs.AESKeyGenerator w intro/outputs/aes.key
 ```
 
 Then, encrypt the glider image with it:
 
 ```bash
-$ java ImageAESCipher intro/inputs/glider-0480.png intro/outputs/aes.key ECB intro/outputs/glider-aes-ecb.png
+$ java pt.ulisboa.tecnico.meic.sirs.ImageAESCipher intro/inputs/glider-0480.png intro/outputs/aes.key ECB intro/outputs/glider-aes-ecb.png
 ```
 
 Watch the output image. 
@@ -188,7 +188,7 @@ The AES key will be the same from the previous step.
 Encrypt the glider image with it, this time replacing ECB with CBC:
 
 ```bash
-$ java ImageAESCipher intro/inputs/glider-0480.png intro/outputs/aes.key CBC intro/outputs/glider-aes-cbc.png
+$ java pt.ulisboa.tecnico.meic.sirs.ImageAESCipher intro/inputs/glider-0480.png intro/outputs/aes.key CBC intro/outputs/glider-aes-cbc.png
 ```
 
 Watch the file glider-aes-cbc.png. 
@@ -202,9 +202,9 @@ The ImageAESCipher class provided has been deliberately weakened: instead of ran
 This time, encrypt the other two images with AES/CBC, still using the same AES key:
 
 ```bash
-$ java ImageAESCipher intro/inputs/tux-0480.png intro/outputs/aes.key CBC intro/outputs/tux-aes-cbc.png
+$ java pt.ulisboa.tecnico.meic.sirs.ImageAESCipher intro/inputs/tux-0480.png intro/outputs/aes.key CBC intro/outputs/tux-aes-cbc.png
 
-$ java ImageAESCipher intro/inputs/tecnico-0480.png intro/outputs/aes.key CBC intro/outputs/tecnico-aes-cbc.png
+$ java pt.ulisboa.tecnico.meic.sirs.ImageAESCipher intro/inputs/tecnico-0480.png intro/outputs/aes.key CBC intro/outputs/tecnico-aes-cbc.png
 ```
 
 Now watch the images glider-aes-cbc.png, tux-aes-cbc.png, and tecnico-aes-cbc.png.
@@ -224,11 +224,11 @@ This implies that in OFB mode, if the key and the IV are both reused, there is n
 Encrypt the images with OFB:
 
 ```bash
-$ java ImageAESCipher intro/inputs/glider-0480.png intro/outputs/aes.key OFB intro/outputs/glider-aes-ofb.png
+$ java pt.ulisboa.tecnico.meic.sirs.ImageAESCipher intro/inputs/glider-0480.png intro/outputs/aes.key OFB intro/outputs/glider-aes-ofb.png
 
-$ java ImageAESCipher intro/inputs/tux-0480.png intro/outputs/aes.key OFB intro/outputs/tux-aes-ofb.png
+$ java pt.ulisboa.tecnico.meic.sirs.ImageAESCipher intro/inputs/tux-0480.png intro/outputs/aes.key OFB intro/outputs/tux-aes-ofb.png
 
-$ java ImageAESCipher intro/inputs/tecnico-0480.png intro/outputs/aes.key OFB intro/outputs/tecnico-aes-ofb.png
+$ java pt.ulisboa.tecnico.meic.sirs.ImageAESCipher intro/inputs/tecnico-0480.png intro/outputs/aes.key OFB intro/outputs/tecnico-aes-ofb.png
 ```
 
 Remember that the ImageAESCipher implementation has been weakened, by having a null IV, and you are reusing the same AES key. 
@@ -258,7 +258,7 @@ $ openssl genrsa -out server.key
 Save the public key:
 
 ```bash
-$ openssl rsa -in server.key –pubout \&gt; public.key
+$ openssl rsa -pubout -in server.key > public.key
 ```
 
 #### Generating a self-signed certificate
@@ -333,7 +333,7 @@ $ openssl pkcs8 -topk8 -inform PEM -outform DER -in server.key -nocrypt \&gt; se
 Read the key files using the following command:
 
 ```bash
-java RSAKeyGenerator r server\_pkcs8.key server.crt
+java pt.ulisboa.tecnico.meic.sirs.RSAKeyGenerator r server\_pkcs8.key server.crt
 ```
 
 
@@ -342,7 +342,7 @@ java RSAKeyGenerator r server\_pkcs8.key server.crt
 Generate a new pair of RSA Keys.
 
 ```bash
-$ java RSAKeyGenerator w intro/outputs/priv.key intro/outputs/pub.key
+$ java pt.ulisboa.tecnico.meic.sirs.RSAKeyGenerator w intro/outputs/priv.key intro/outputs/pub.key
 ```
 
 Based on the ImageAESCipher class create ImageRSACipher and ImageRSADecipher classes.
@@ -366,7 +366,7 @@ Begin by encrypting this file into ecb.aes.
 For this example, we will still reuse the AES key generated above and ECB mode.
 
 ```bash
-$java FileAESCipher grades/inputs/grades.txt intro/outputs/aes.key ECB grades/outputs/grades.ecb.aes
+$java pt.ulisboa.tecnico.meic.sirs.FileAESCipher grades/inputs/grades.txt intro/outputs/aes.key ECB grades/outputs/grades.ecb.aes
 ```
 
 Keeping in mind how the mode operations work, and without using the secret key, try to change your grade to 21 in the encrypted files or give everyone in class a 20.
@@ -378,9 +378,9 @@ Did your changes have side effects?
 Now try to attack cbc.aes and ofb.aes. For this example, we will still reuse the AES key generated above but use the CBC and OFB modes.
 
 ```bash
-$java FileAESCipher grades/inputs/grades.txt intro/outputs/aes.key CBC grades/outputs/grades.cbc.aes
+$java pt.ulisboa.tecnico.meic.sirs.FileAESCipher grades/inputs/grades.txt intro/outputs/aes.key CBC grades/outputs/grades.cbc.aes
 
-$java FileAESCipher grades/inputs/grades.txt intro/outputs/aes.key OFB grades/outputs/grades.ofb.aes
+$java pt.ulisboa.tecnico.meic.sirs.FileAESCipher grades/inputs/grades.txt intro/outputs/aes.key OFB grades/outputs/grades.ofb.aes
 ```
 
 How do you compare the results with EBC?
@@ -390,13 +390,13 @@ A possibility is to use base 64 encoding that, for every binary sequence of 6 bi
 Execute the following to create a base 64 representation of files previously generated.
 
 ```bash
-$java Base64Encode grades/outputs/grades.cbc.aes grades/outputs/grades.cbc.aes.b64
+$java pt.ulisboa.tecnico.meic.sirs.Base64Encode grades/outputs/grades.cbc.aes grades/outputs/grades.cbc.aes.b64
 ```
 
 Decode them:
 
 ```bash
-$java Base64Decode grades/outputs/grades.cbc.aes.b64 grades/outputs/grades.cbc.aes.b64.decoded
+$java pt.ulisboa.tecnico.meic.sirs.Base64Decode grades/outputs/grades.cbc.aes.b64 grades/outputs/grades.cbc.aes.b64.decoded
 ```
 
 Check if they are similar using the diff command (or fc /b command on Windows):

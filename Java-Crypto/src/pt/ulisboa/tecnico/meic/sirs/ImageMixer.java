@@ -13,7 +13,7 @@ public class ImageMixer {
      * @param image the image to convert
      * @return a byte array with the pixels from the image (one pixel is one bit)
      */
-    private static byte[] imageToByteArray(BufferedImage image) {
+    public static byte[] imageToByteArray(BufferedImage image) {
         DataBuffer imageDataBuffer = image.getRaster().getDataBuffer();
         return ((DataBufferByte)imageDataBuffer).getData();
     }
@@ -88,7 +88,7 @@ public class ImageMixer {
      * @param height the height of the image to generate
      * @return the BufferedImage corresponding to the input array
      */
-    private static BufferedImage getImageFromArray(byte[] pixels, int width, int height) {
+    public static BufferedImage getImageFromArray(byte[] pixels, int width, int height) {
         // create a binary color model, with a b/w colormap, where white (index 0) is the transparent color
         // I sure hope there's an easier way of accomplishing this...
         byte[] colorMap = { (byte) 0xff, (byte) 0x00 };
@@ -106,7 +106,7 @@ public class ImageMixer {
      * @param image the BufferedImage to write to disk
      * @param file the filesystem location of the image file
      */
-    private static void writeImageToFile(BufferedImage image, String file) {
+    public static void writeImageToFile(BufferedImage image, String file) {
         try {
             File outputFile = new File(file);
             ImageIO.write(image, "png", outputFile);
